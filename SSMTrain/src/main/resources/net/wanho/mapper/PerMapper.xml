@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间，和接口关联-->
+<mapper namespace="net.wanho.mapper.PerMapper">
+    <insert id="addPer">
+
+        INSERT INTO tb_per VALUES (NULL ,#{pName},#{parentId},#{url})
+
+    </insert>
+    <update id="updatePerName">
+
+        UPDATE tb_per SET  pName=#{pName} where pId=#{pId}
+
+    </update>
+    <delete id="deletePer">
+
+        DELETE FROM tb_per WHERE pId=#{pId}
+
+    </delete>
+    <delete id="deleteRolePer">
+
+         DELETE FROM per_role WHERE pId=#{pId}
+
+    </delete>
+
+
+    <select id="selectPerById" resultType="net.wanho.pojo.Per">
+
+        SELECT * FROM tb_per WHERE pId=#{pId}
+
+    </select>
+    <select id="selectPerByParentId" resultType="net.wanho.pojo.Per">
+
+        SELECT * FROM tb_per WHERE parentId=#{parentId}
+
+    </select>
+</mapper>

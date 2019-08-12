@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间，和接口关联-->
+<mapper namespace="net.wanho.mapper.UserMapper">
+
+
+    <insert id="register" useGeneratedKeys="true" keyProperty="id">
+
+        INSERT INTO tb_user VALUES (NULL ,#{userName},#{password},#{status},#{salt})
+
+    </insert>
+    <insert id="insert">
+
+        INSERT INTO user_role VALUES (#{uId},#{rId})
+
+    </insert>
+    <insert id="insertUserRoleRelation">
+
+         INSERT INTO user_role VALUES (#{uId},#{rId})
+
+    </insert>
+    <insert id="insertRolePerRelation">
+
+        INSERT INTO per_role VALUES (#{rId},#{pId})
+
+    </insert>
+    <insert id="addRole" useGeneratedKeys="true" keyProperty="rId">
+
+        INSERT INTO tb_role VALUES (null,#{rName})
+
+    </insert>
+
+
+    <update id="updateStatus">
+
+        UPDATE tb_user SET status=#{status} WHERE id=#{id}
+
+    </update>
+    <delete id="deleteUserRoleRelation">
+
+        DELETE FROM user_role WHERE uId=#{uId}
+
+    </delete>
+    <delete id="deleteRolePerRelation">
+
+        DELETE FROM per_role WHERE rId=#{rId}
+
+    </delete>
+    <delete id="deleteUser">
+
+        DELETE FROM tb_user WHERE id=#{id}
+
+    </delete>
+
+
+    <select id="getUserByName" resultType="net.wanho.pojo.User">
+
+        SELECT id,userName,password,status,salt FROM tb_user WHERE userName=#{userName}
+
+    </select>
+
+    <resultMap id="userMap" type="User">
+        <id property="id" column="id"/>
+        <result property="userName" column="userName"/>
+        <result property="password" column="password"/>
+        <result property="status" column="status"/>
+        <result property="salt" column="salt"/>
+        <collection property="roles" javaType="java.util.List" ofType="Role">
+            <id property="rId" column="rId"/>
+            <result property="rName" column="rName"/>
+        </collection>
+    </resultMap>
+
+    <select id="getUserRoles" resultMap="userMap">
+
+        SELECT * FROM tb_user u LEFT JOIN user_role ur ON u.id=ur.uId JOIN tb_role r ON r.rId=ur.rId WHERE u.id=#{id}
+
+    </select>
+
+
+    <resultMap id="roleMap" type="Role">
+        <id property="rId" column="rId"/>
+        <result property="rName" column="rName"/>
+        <collection property="pers" javaType="java.util.List" ofType="Per">
+            <id property="pId" column="pId"/>
+            <result property="pName" column="pName"/>
+            <result property="parentId" column="parentId"/>
+            <result property="url" column="url"/>
+        </collection>
+    </resultMap>
+    <select id="getRolePer" resultMap="roleMap">
+
+        SELECT * FROM tb_role r LEFT JOIN per_role pr ON r.rId=pr.rId JOIN tb_per p ON p.pId=pr.pId  WHERE r.rId=#{rId}
+
+    </select>
+    <select id="getAllUser" resultType="net.wanho.pojo.User">
+
+        SELECT * FROM tb_user ORDER BY status
+
+    </select>
+    <select id="getAllRole" resultType="net.wanho.pojo.Role">
+
+        SELECT * FROM tb_role
+
+    </select>
+    <select id="getAllPer" resultType="net.wanho.pojo.Per">
+
+        SELECT * FROM tb_per
+
+    </select>
+</mapper>
